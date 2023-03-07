@@ -94,7 +94,7 @@ def delimit(listed):
         nums.append(float(tempHold))
         return(nums, sigs)
     else:
-        sigs.extend('error', 'error')
+        sigs.extend('error')
         return(0,sigs)
 
 #Checks operator list for mixed order
