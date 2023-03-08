@@ -41,11 +41,15 @@ def breakUp(initialEq):
             attach *= -1
         listed = innerDel(listed, oParCnt)
     nums, sigs = delimit(listed)
-    if sigs[0] == 'u':
-        print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
-    else:
+    if not sigs:
         total = eqCheck(nums, sigs)
         prTotal(initialEq, total, exSig, attach)
+    else:
+        if sigs[0] == 'u':
+            print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
+        else:
+            total = eqCheck(nums, sigs)
+            prTotal(initialEq, total, exSig, attach)
 
 #Isolates parenthesis equations       
 def innerDel(listed, oParCnt):
