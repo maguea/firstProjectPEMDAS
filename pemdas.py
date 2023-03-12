@@ -15,17 +15,45 @@
 
 #Turn input str into list    
 def breakUp(initialEq):
-    exSig = False
-    attach = 0
     listed = list()
     listed.extend(initialEq)
     oParCnt = listed.count('(')
     cParCnt = listed.count(')')
-    if((listed[-1] == '+') | (listed[-1] == '-') | (listed[-1] == '*') | (listed[-1] == '/') | (listed[-1] == '^') | (listed[-1] == '=')):
+    for x in listed:
+        if isOp(x) == False:
+            if(x != '(') and (x != ')') and (x!='.'):
+                try:
+                    float(x)
+                except:
+                    print(str(x) + "can not be used in this equation, automatically removed.")
+                    listed.remove(x)
+    listed, attach = repair(listed, oParCnt, cParCnt)
+    nums, sigs = delimit(listed)
+    finalEq = ''.join(listed)
+    if not sigs:
+        total = eqCheck(nums, sigs)
+        prTotal(finalEq, total, attach)
+    else:
+        if sigs[0] == 'u':
+            print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
+        else:
+            total = eqCheck(nums, sigs)
+            prTotal(finalEq, total, attach)
+
+#Boolean check if x is an operator
+def isOp(x):
+    if(x == '+') | (x == '-') | (x == '*') | (x == '/') | (x == '^'):
+        return True
+    else:
+        return False
+
+#Checks equations and fixes possible errors
+def repair(listed, oParCnt, cParCnt):
+    attach = 0
+    if(isOp(listed[-1])):
         print("An extra operator \"" + listed[-1] + "\" has been found at the end of the equation. Automatically removed.")
         listed.pop()
-        exSig = True
-    if((oParCnt != 0)|(cParCnt != 0)):
+    if((oParCnt != 0) | (cParCnt != 0)):
         if(oParCnt > cParCnt):
             while(oParCnt != cParCnt):
                 listed.append(')')
@@ -40,16 +68,7 @@ def breakUp(initialEq):
             print("Parentheses have not been properly opened. Automatically added "+ str(attach) +" opening parentheses to the beginning of equation.")
             attach *= -1
         listed = innerDel(listed, oParCnt)
-    nums, sigs = delimit(listed)
-    if not sigs:
-        total = eqCheck(nums, sigs)
-        prTotal(initialEq, total, exSig, attach)
-    else:
-        if sigs[0] == 'u':
-            print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
-        else:
-            total = eqCheck(nums, sigs)
-            prTotal(initialEq, total, exSig, attach)
+    return(listed, attach)
 
 #Isolates parenthesis equations       
 def innerDel(listed, oParCnt):
@@ -81,7 +100,7 @@ def delimit(listed):
     tempHold+=listed[x]
     x+=1
     while(x < len(listed)):
-        if((listed[x] == '+') | (listed[x] == '-') | (listed[x] == '*') | (listed[x] == '/') | (listed[x] == '^')):
+        if(isOp(listed[x])):
             nums.append(float(tempHold))
             tempHold = ''
             if((listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^')):
@@ -174,9 +193,7 @@ def expo(nums, sigs):
     return(total)
 
 #print out messages or totals
-def prTotal(eq, total, extras, attachments):
-    if(extras):
-        eq = eq.rstrip(eq[-1])
+def prTotal(eq, total, attachments):
     if(attachments > 0):
         while(attachments > 0):
             eq += ')'
