@@ -1,4 +1,12 @@
-#Turn input str into list    
+#Takes input
+def start():
+    initialEq = input("Enter equation (Type \"EXIT\" to close program): ")
+    if initialEq != "EXIT":        
+        breakUp(initialEq)
+    else:
+        print("Thank you, goodbye.")
+
+#Directs input str into a total    
 def breakUp(initialEq):
     listed = list()
     listed.extend(initialEq)
@@ -10,19 +18,16 @@ def breakUp(initialEq):
                 try:
                     float(x)
                 except:
-                    print("\"" + str(x) + "\" can not be used in this equation, automatically removed.")
+                    print("\"" + str(x) + "\" has been automatically removed.")
                     listed.remove(x)
-    listed, finalEq = repair(listed, oParCnt, cParCnt)
-    nums, sigs = delimit(listed)
-    if not sigs:
-        total = eqCheck(nums, sigs)
-        prTotal(finalEq, total)
+    if not listed:
+        print("No equation left.")
     else:
-        if sigs[0] == 'u':
-            print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
-        else:
-            total = eqCheck(nums, sigs)
-            prTotal(finalEq, total)
+        listed, finalEq = repair(listed, oParCnt, cParCnt)
+        nums, sigs = delimit(listed)
+        total = eqCheck(nums, sigs)
+        print(finalEq + ' = ' + str(total))
+    start()
 
 #Boolean check if x is an operator
 def isOp(x):
@@ -52,6 +57,8 @@ def repair(listed, oParCnt, cParCnt):
             print("Parentheses have not been properly opened. Automatically added "+ str(attach) +" opening parentheses to the beginning of equation.")
         finalEq = ''.join(listed)
         listed = innerDel(listed, oParCnt)
+    else:
+        finalEq = ''.join(listed)
     return(listed, finalEq)
 
 #Isolates parenthesis equations       
@@ -80,7 +87,6 @@ def delimit(listed):
     nums = list()
     tempHold = ''
     x = 0
-    breakIt = True
     tempHold+=listed[x]
     x+=1
     while(x < len(listed)):
@@ -88,8 +94,7 @@ def delimit(listed):
             nums.append(float(tempHold))
             tempHold = ''
             if((listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^')):
-                breakIt = False
-                break
+                print("Extra operator: \"" + listed[x+1] + "\" has been found, automatically removed.")
             sigs.append(listed[x])
             x+=1
             if(listed[x] == '-'):
@@ -97,12 +102,8 @@ def delimit(listed):
                 x+=1    
         tempHold += listed[x]
         x+=1
-    if(breakIt):
-        nums.append(float(tempHold))
-        return(nums, sigs)
-    else:
-        sigs.extend('u')
-        return(0,sigs)
+    nums.append(float(tempHold))
+    return(nums, sigs)
 
 #Checks operator list for mixed order
 def eqCheck(nums, sigs):
@@ -176,9 +177,5 @@ def expo(nums, sigs):
         x-=1
     return(total)
 
-#print out messages or totals
-def prTotal(eq, total):
-    print(eq + ' = ' + str(total))
-            
-initialEq = input("Enter equation: ")        
-breakUp(initialEq)
+#Initializes program loop
+start()
