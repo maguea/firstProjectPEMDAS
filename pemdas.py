@@ -25,20 +25,19 @@ def breakUp(initialEq):
                 try:
                     float(x)
                 except:
-                    print(str(x) + "can not be used in this equation, automatically removed.")
+                    print("\"" + str(x) + "\" can not be used in this equation, automatically removed.")
                     listed.remove(x)
-    listed, attach = repair(listed, oParCnt, cParCnt)
+    listed, finalEq = repair(listed, oParCnt, cParCnt)
     nums, sigs = delimit(listed)
-    finalEq = ''.join(listed)
     if not sigs:
         total = eqCheck(nums, sigs)
-        prTotal(finalEq, total, attach)
+        prTotal(finalEq, total)
     else:
         if sigs[0] == 'u':
             print("Too many operators (\"+\", \"-\", \"*\", \"/\", \"^\"). Please check the equation: " + initialEq + " again.")
         else:
             total = eqCheck(nums, sigs)
-            prTotal(finalEq, total, attach)
+            prTotal(finalEq, total)
 
 #Boolean check if x is an operator
 def isOp(x):
@@ -66,9 +65,9 @@ def repair(listed, oParCnt, cParCnt):
                 oParCnt += 1
                 attach += 1
             print("Parentheses have not been properly opened. Automatically added "+ str(attach) +" opening parentheses to the beginning of equation.")
-            attach *= -1
+        finalEq = ''.join(listed)
         listed = innerDel(listed, oParCnt)
-    return(listed, attach)
+    return(listed, finalEq)
 
 #Isolates parenthesis equations       
 def innerDel(listed, oParCnt):
@@ -193,18 +192,7 @@ def expo(nums, sigs):
     return(total)
 
 #print out messages or totals
-def prTotal(eq, total, attachments):
-    if(attachments > 0):
-        while(attachments > 0):
-            eq += ')'
-            attachments -=1
-    elif(attachments < 0):
-        attachments *= -1
-        tempEq = ''
-        while(attachments > 0):
-            tempEq += '('
-            attachments -=1
-        eq = tempEq + eq
+def prTotal(eq, total):
     print(eq + ' = ' + str(total))
             
 initialEq = input("Enter equation: ")        
