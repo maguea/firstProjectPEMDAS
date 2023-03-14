@@ -95,6 +95,7 @@ def delimit(listed):
             tempHold = ''
             if (listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^'):
                 print("Extra operator: \"" + listed[x+1] + "\" has been found, automatically removed.")
+                listed.pop(x+1)
             sigs.append(listed[x])
             x+=1
             if listed[x] == '-':
@@ -125,6 +126,7 @@ def eqCheck(nums, sigs):
             newNum.clear()
         x = 0
         newNum.clear()
+        #REWRITE EQCHECK TRY FOR X IN LIST
         while muDi > 0:
             if sigs.count('*') > 0:
                 x = sigs.index('*')
