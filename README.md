@@ -1,7 +1,7 @@
 # firstProjectPEMDAS
 Terminal calculator that solves basic equations in PEMDAS order
 
-Instructions: Program will ignore white space, and correct minor misinputs.
+Instructions: Program will ignore white space, and correct minor misinputs.\n
 Program Syntax:
    '(' to begin a parnethesis, ')' to close parenthesis 
    '^' for power of
