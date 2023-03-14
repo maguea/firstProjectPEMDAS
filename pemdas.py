@@ -39,18 +39,18 @@ def isOp(x):
 #Checks equations and fixes possible errors
 def repair(listed, oParCnt, cParCnt):
     attach = 0
-    if(isOp(listed[-1])):
+    if isOp(listed[-1]):
         print("An extra operator \"" + listed[-1] + "\" has been found at the end of the equation. Automatically removed.")
         listed.pop()
-    if((oParCnt != 0) | (cParCnt != 0)):
-        if(oParCnt > cParCnt):
-            while(oParCnt != cParCnt):
+    if (oParCnt != 0) | (cParCnt != 0):
+        if oParCnt > cParCnt:
+            while oParCnt != cParCnt:
                 listed.append(')')
                 cParCnt += 1
                 attach += 1
             print("Parentheses have not been properly closed. Automatically added "+ str(attach) +" closing parentheses to the end of equation.")
-        if(oParCnt < cParCnt):
-            while(oParCnt != cParCnt):
+        if oParCnt < cParCnt:
+            while oParCnt != cParCnt:
                 listed.insert(0, '(')
                 oParCnt += 1
                 attach += 1
@@ -65,11 +65,11 @@ def repair(listed, oParCnt, cParCnt):
 def innerDel(listed, oParCnt):
     x = 0
     innerPar = list()
-    while(oParCnt > 0):
-        if(listed[x] == '('):
+    while oParCnt > 0:
+        if listed[x] == '(':
             oParCnt -= 1
         x+=1
-    while(listed[x] != ')'):
+    while listed[x] != ')':
         innerPar.append(listed[x])
         listed.pop(x)
     nums, sigs = delimit(innerPar)
@@ -77,7 +77,7 @@ def innerDel(listed, oParCnt):
     listed[x-1] = str(replace)
     listed.pop(x)
     newOPar = listed.count('(')
-    if(newOPar > 0):
+    if newOPar > 0:
         listed = innerDel(listed, newOPar)
     return(listed)
 
@@ -89,15 +89,15 @@ def delimit(listed):
     x = 0
     tempHold+=listed[x]
     x+=1
-    while(x < len(listed)):
-        if(isOp(listed[x])):
+    while x < len(listed):
+        if isOp(listed[x]):
             nums.append(float(tempHold))
             tempHold = ''
-            if((listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^')):
+            if (listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^'):
                 print("Extra operator: \"" + listed[x+1] + "\" has been found, automatically removed.")
             sigs.append(listed[x])
             x+=1
-            if(listed[x] == '-'):
+            if listed[x] == '-':
                 tempHold += listed[x]
                 x+=1    
         tempHold += listed[x]
@@ -112,9 +112,9 @@ def eqCheck(nums, sigs):
     muDi = sigs.count('*') + sigs.count('/')
     plMi = sigs.count('+') + sigs.count('-')
     total = nums[0]
-    while((len(sigs) - plMi) > 0):
+    while (len(sigs) - plMi) > 0:
         x = 0
-        while(exp > 0):
+        while exp > 0:
             x = sigs.index('^')
             exp -= 1
             newNum.extend((nums[x], nums[x+1]))
@@ -125,10 +125,10 @@ def eqCheck(nums, sigs):
             newNum.clear()
         x = 0
         newNum.clear()
-        while(muDi > 0):
-            if(sigs.count('*') > 0):
+        while muDi > 0:
+            if sigs.count('*') > 0:
                 x = sigs.index('*')
-            if(sigs.count('/') > 0):
+            if sigs.count('/') > 0:
                 x = sigs.index('/')
             muDi-=1
             newNum.extend((nums[x], nums[x+1]))
@@ -137,7 +137,7 @@ def eqCheck(nums, sigs):
             nums[x] = total
             sigs.pop(x)
             newNum.clear()     
-    if(plMi > 0):
+    if plMi > 0:
         total = adSub(nums, sigs)
     return(total)
 
@@ -147,12 +147,12 @@ def adSub(nums, sigs):
     z = 0
     total = nums[0]
     sigs.append(' = ')
-    while(x < len(nums)):
+    while x < len(nums):
         input = nums[x]
-        if(sigs[z] == '-'):
+        if sigs[z] == '-':
             total -= input
             z+=1
-        elif(sigs[z] == '+'):
+        elif sigs[z] == '+':
             total += input
             z+=1
         else:
@@ -162,9 +162,9 @@ def adSub(nums, sigs):
 
 #Calculate multiplication and division in order
 def mulDi(nums, sigs):
-    if(sigs[0] == '/'):
+    if sigs[0] == '/':
         total = nums[0] / nums[1]
-    if(sigs[0] == '*'):
+    if sigs[0] == '*':
         total = nums[0] * nums[1]
     return(total)
 
@@ -172,7 +172,7 @@ def mulDi(nums, sigs):
 def expo(nums, sigs):
     x = len(sigs)
     total = nums[x]
-    while(x > 0):
+    while x > 0:
         total = nums[x-1] ** total
         x-=1
     return(total)
