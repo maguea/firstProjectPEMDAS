@@ -11,12 +11,16 @@
 #No support for Euler's number (e) or logs
 #Hit enter after typing equation (you can include or omit '=' sign)
 
+#FIX
+#blank to the power
+#x) * (x error
+
 #-----------code below-----------#
 
 #Takes input
 def start():
-    initialEq = input("Enter equation (Type \"EXIT\" to close program): ")
-    if initialEq != "EXIT":        
+    initialEq = input("Enter equation (Type \"c\" to close program): ")
+    if initialEq != "c" and initialEq != "C":        
         breakUp(initialEq)
     else:
         print("Thank you, goodbye.")
@@ -45,7 +49,7 @@ def breakUp(initialEq):
 
 #Boolean check if x is an operator
 def isOp(x):
-    if(x == '+') | (x == '-') | (x == '*') | (x == '/') | (x == '^'):
+    if (x == '+') or (x == '-') or (x == '*') or (x == '/') or (x == '^'):
         return True
     else:
         return False
@@ -53,10 +57,10 @@ def isOp(x):
 #Checks equations and fixes possible errors
 def repair(listed, oParCnt, cParCnt):
     attach = 0
-    if isOp(listed[-1]):
+    if isOp(listed[-1]) or listed[-1] == '(':
         print("An extra operator \"" + listed[-1] + "\" has been found at the end of the equation. Automatically removed.")
         listed.pop()
-    if (oParCnt != 0) | (cParCnt != 0):
+    if (oParCnt != 0) or (cParCnt != 0):
         if oParCnt > cParCnt:
             while oParCnt != cParCnt:
                 listed.append(')')
@@ -108,14 +112,11 @@ def delimit(listed):
             finalFloat = floatCheck(tempHold)
             nums.append(finalFloat)
             tempHold = ''
-            if (listed[x+1] == '+') | (listed[x+1] == '*') | (listed[x+1] == '/') | (listed[x+1] == '^'):
+            if isOp(listed[x+1]) and (listed[x+1] != '-'):
                 print("Extra operator: \"" + listed[x+1] + "\" has been found, automatically removed.")
                 listed.pop(x+1)
             sigs.append(listed[x])
-            x+=1
-            if listed[x] == '-':
-                tempHold += listed[x]
-                x+=1    
+            x+=1        
         tempHold += listed[x]
         x+=1
     nums.append(floatCheck(tempHold))
@@ -140,7 +141,6 @@ def floatCheck(input):
 
 #Checks operator list for mixed order
 def eqCheck(nums, sigs):
-    error0 = False
     newNum = list()
     exp = sigs.count('^')
     muDi = sigs.count('*') + sigs.count('/')
@@ -169,7 +169,6 @@ def eqCheck(nums, sigs):
             total = mulDi(newNum, sigs[x])
             if total == 'Cannot divide by 0, try again.':
                 return('Cannot divide by 0, try again.')
-                break
             nums.pop(x+1)
             nums[x] = total
             sigs.pop(x)
