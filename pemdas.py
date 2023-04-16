@@ -110,7 +110,8 @@ def delimit(listed):
     while x < len(listed):
         if isOp(listed[x]):
             finalFloat = floatCheck(tempHold)
-            nums.append(finalFloat)
+            if finalFloat != 'skip':
+                nums.append(finalFloat)
             tempHold = ''
             if isOp(listed[x+1]) and (listed[x+1] != '-'):
                 print("Extra operator: \"" + listed[x+1] + "\" has been found, automatically removed.")
@@ -134,7 +135,10 @@ def floatCheck(input):
         while decPoints > 1:
             numCheck.remove('.')
             decPoints -= 1
-        return(float(''.join(str(x) for x in numCheck)))
+        try:
+            return(float(''.join(str(x) for x in numCheck)))
+        except:
+            return('skip')
 
 #Checks operator list for mixed order
 def eqCheck(nums, sigs):
@@ -212,3 +216,6 @@ def expo(nums, sigs):
         total = nums[x-1] ** total
         x-=1
     return(total)
+
+#Initializes program loop
+start()
