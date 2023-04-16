@@ -47,13 +47,6 @@ def breakUp(initialEq):
         print(finalEq + ' = ' + str(total))
     start()
 
-#Boolean check if x is an operator
-def isOp(x):
-    if (x == '+') or (x == '-') or (x == '*') or (x == '/') or (x == '^'):
-        return True
-    else:
-        return False
-
 #Checks equations and fixes possible errors
 def repair(listed, oParCnt, cParCnt):
     attach = 0
@@ -78,6 +71,13 @@ def repair(listed, oParCnt, cParCnt):
     else:
         finalEq = ''.join(listed)
     return(listed, finalEq)
+
+#Boolean check if x is an operator
+def isOp(x):
+    if (x == '+') or (x == '-') or (x == '*') or (x == '/') or (x == '^'):
+        return True
+    else:
+        return False
 
 #Isolates parenthesis equations       
 def innerDel(listed, oParCnt):
@@ -126,18 +126,15 @@ def delimit(listed):
 def floatCheck(input):
     try:
         float(input)
+        return(float(input))
     except:
-        pointRep = input.count('.')
-        minusRep = input.count('-')
-        if pointRep > 1:
-            while pointRep > 0:
-                input = input[1:]
-                pointRep -= 1
-        if minusRep > 1:
-            while minusRep > 0:
-                input = input[1:]
-                minusRep -= 1
-    return(float(input))
+        numCheck = list()
+        numCheck.extend(input)
+        decPoints = numCheck.count('.')
+        while decPoints > 1:
+            numCheck.remove('.')
+            decPoints -= 1
+        return(float(''.join(str(x) for x in numCheck)))
 
 #Checks operator list for mixed order
 def eqCheck(nums, sigs):
@@ -215,6 +212,3 @@ def expo(nums, sigs):
         total = nums[x-1] ** total
         x-=1
     return(total)
-
-#Initializes program loop
-start()
