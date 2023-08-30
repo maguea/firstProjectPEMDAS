@@ -11,23 +11,21 @@
 #No support for Euler's number (e) or logs
 #Hit enter after typing equation (you can include or omit '=' sign)
 
-#FIX
-#blank to the power
-#x) * (x error
-
 #-----------code below-----------#
 
-#Takes input
+#Start loop to keep program open
 def start():
     initialEq = input("Enter equation (Type \"c\" to close program): ")
-    if initialEq != "c" and initialEq != "C":        
+    if initialEq != "c" and initialEq != "C":
         breakUp(initialEq)
     else:
         print("Thank you, goodbye.")
 
 #Directs input str into a total    
 def breakUp(initialEq):
+    attach = 0
     listed = list()
+    removes = list()
     listed.extend(initialEq)
     oParCnt = listed.count('(')
     cParCnt = listed.count(')')
@@ -37,19 +35,33 @@ def breakUp(initialEq):
                 float(x)
             except:
                 print("\"" + str(x) + "\" has been automatically removed.")
-                listed.remove(x)
+                removes.append(x)
+    for x in removes:
+        listed.remove(x)
     if not listed:
         print("No equation left.")
     else:
-        listed, finalEq = repair(listed, oParCnt, cParCnt)
+        if oParCnt and cParCnt:
+            listed, oParCnt, cParCnt, attach = crabLegs(listed, attach)
+        listed, finalEq = repair(listed, oParCnt, cParCnt, attach)
         nums, sigs = delimit(listed)
         total = eqCheck(nums, sigs)
         print(finalEq + ' = ' + str(total))
     start()
 
+#Fixes specific error where equation has ) * (
+def crabLegs(listed, attach):
+    oPar = listed.index('(')
+    cPar = listed.index(')')
+    if cPar < oPar:
+        listed.append(')')
+        attach += 1
+    oParCnt = listed.count('(')
+    cParCnt = listed.count(')')
+    return(listed, oParCnt, cParCnt, attach)           
+
 #Checks equations and fixes possible errors
-def repair(listed, oParCnt, cParCnt):
-    attach = 0
+def repair(listed, oParCnt, cParCnt, attach):
     if isOp(listed[-1]) or listed[-1] == '(':
         print("An extra operator \"" + listed[-1] + "\" has been found at the end of the equation. Automatically removed.")
         listed.pop()
@@ -59,13 +71,12 @@ def repair(listed, oParCnt, cParCnt):
                 listed.append(')')
                 cParCnt += 1
                 attach += 1
-            print("Parentheses have not been properly closed. Automatically added "+ str(attach) +" closing parentheses to the end of equation.")
         if oParCnt < cParCnt:
             while oParCnt != cParCnt:
                 listed.insert(0, '(')
                 oParCnt += 1
                 attach += 1
-            print("Parentheses have not been properly opened. Automatically added "+ str(attach) +" opening parentheses to the beginning of equation.")
+        print("Parentheses have not been properly closed. Automatically added "+ str(attach) +" parentheses.")
         finalEq = ''.join(listed)
         listed = innerDel(listed, oParCnt)
     else:
@@ -202,11 +213,12 @@ def mulDi(nums, sigs):
     if sigs[0] == '/':
         if nums[1] != 0:
             total = nums[0] / nums[1]
+            return(total)
         else:
-            return('Cannot divide by 0, try again.')
+            print('Cannot divide by 0, try again.')
     if sigs[0] == '*':
         total = nums[0] * nums[1]
-    return(total)
+        return(total)
 
 #Calculate exponents in order        
 def expo(nums, sigs):
